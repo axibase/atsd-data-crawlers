@@ -14,12 +14,6 @@ public class UrlSearcher {
     {
         ProductSearcher searcher = new ProductSearcher();
 
-        Result<ArrayList<Integer>> storeIdsResult = searcher.searchStoreIds();
-        if (storeIdsResult.errorText != null) {
-            Logger.log(storeIdsResult.errorText);
-            return null;
-        }
-
         int productIndex = 0;
         int productsFound = 0;
         ArrayList<ProductUrl> productUrls = new ArrayList<>(orders.size());
@@ -28,14 +22,7 @@ public class UrlSearcher {
             productIndex++;
             Logger.log("Searching product %1s/%2s", productIndex, orders.size());
 
-            Result<String> searchResult = null;
-            for (Integer storeId : storeIdsResult.result) {
-                searchResult = searcher.searchProductUrl(storeId, order.productName);
-
-                if (searchResult.errorText == null && searchResult.result != null && !searchResult.result.startsWith("wcs/")) {
-                    break;
-                }
-            }
+            Result<String> searchResult = searcher.searchProductUrl(10653, order.productName);
 
             if (searchResult == null) {
                 Logger.log("Searching product %1s error", order.productName);

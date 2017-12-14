@@ -85,10 +85,20 @@ public class DataProvider {
             }
 
             for (PriceData data : product.priceData) {
+                double price = data.price != null ? data.price : product.lastPrice;
+                double discount;
+                if (data.discount != null) {
+                    discount = data.discount;
+                } else if (data.price != null) {
+                    discount = 0;
+                } else {
+                    discount = product.lastDiscount;
+                }
+
                 updatePrice(
                         data.id,
-                        data.price != null ? data.price : product.lastPrice,
-                        data.discount != null ? data.discount : product.lastDiscount,
+                        price,
+                        discount,
                         data.zone,
                         data.price != null);
             }

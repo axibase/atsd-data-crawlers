@@ -10,67 +10,8 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 class ProductSearcher {
-
-    Result<ArrayList<Integer>> searchStoreIds() {
-        String urlString = "https://www.okeydostavka.ru/";
-        URL url;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException ex) {
-            return new Result<>("Url error", null);
-        }
-
-        HtmlPageLoader loader = new HtmlPageLoader();
-        Result<String> pageLoadingResult = loader.LoadHtml(url);
-        if (pageLoadingResult.errorText != null) return new Result<>(pageLoadingResult.errorText, null);
-
-        return getStoreIds(pageLoadingResult.result);
-    }
-
-    private Result<ArrayList<Integer>> getStoreIds(String html) {
-        Document htmlDocument = Jsoup.parse(html);
-        if (htmlDocument == null) return new Result<>("Html parse error", null);
-
-        HashSet<Integer> storeIds = new HashSet<>();
-
-        Elements storeIdsContainers = htmlDocument.select("ul.city-selection-description");
-        if (storeIdsContainers == null || storeIdsContainers.size() == 0) return new Result<>("Stores not found", null);
-
-        for(Element storeIdContainer : storeIdsContainers) {
-            if (storeIdContainer == null) continue;
-
-            Elements storeIdElements = storeIdContainer.children();
-            if (storeIdElements == null || storeIdElements.size() == 0) continue;
-
-            for (Element storeIdElement : storeIdElements) {
-                if (storeIdElement == null) continue;
-
-                String priceText = storeIdElement.id();
-                if (priceText == null) continue;
-
-                String[] priceParts = priceText.split("_");
-                if (priceParts.length < 2) {
-                    continue;
-                }
-
-                int storeId;
-                try {
-                    storeId = Integer.parseInt(priceParts[1]);
-                } catch (NumberFormatException ex) {
-                    continue;
-                }
-
-                storeIds.add(storeId);
-            }
-        }
-
-        return new Result<>(null, new ArrayList<>(storeIds));
-    }
-
     Result<String> searchProductUrl(int storeId, String productName) {
         String urlString = "https://www.okeydostavka.ru/webapp/wcs/stores/servlet/SearchDisplay?categoryId=&catalogId=12052&langId=-20&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=20&orderBy=2";
         URL url;
