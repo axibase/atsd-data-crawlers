@@ -4,8 +4,6 @@ import com.axibase.crawler.common.*;
 import com.axibase.crawler.data.PriceData;
 import com.axibase.crawler.data.ProductInfo;
 import com.axibase.crawler.data.ProductUrl;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -80,8 +78,7 @@ public class ProductsCrawler {
                         attributes));
     }
 
-    @NotNull
-    private Result<CategoryContainer> getCategories(@NotNull Document htmlDocument) {
+    private Result<CategoryContainer> getCategories(Document htmlDocument) {
         Element script = htmlDocument.select("script#productData_").last();
         if (script == null) return new Result<>(null, new CategoryContainer(null, null));
         String scriptText = script.html();
@@ -118,8 +115,7 @@ public class ProductsCrawler {
         return new Result<>(null, new CategoryContainer(category, subcategory));
     }
 
-    @NotNull
-    private Result<AttributesContainer> getAttributes(@NotNull Document htmlDocument) {
+    private Result<AttributesContainer> getAttributes(Document htmlDocument) {
         HashMap<String, String> attributesMap = new HashMap<>();
 
         // there are two attribute tables on page, parsing both
@@ -164,11 +160,9 @@ public class ProductsCrawler {
     }
 
     private class AttributesContainer {
-
-        @NotNull
         final Map<String, String> attributes;
 
-        private AttributesContainer(@NotNull Map<String, String> attributes) {
+        private AttributesContainer(Map<String, String> attributes) {
             this.attributes = attributes;
         }
     }
@@ -259,10 +253,9 @@ public class ProductsCrawler {
     private class PriceContainer {
         final double price;
 
-        @Nullable
         final Double discount;
 
-        private PriceContainer(double price, @Nullable Double discount) {
+        private PriceContainer(double price, Double discount) {
             this.price = price;
             this.discount = discount;
         }

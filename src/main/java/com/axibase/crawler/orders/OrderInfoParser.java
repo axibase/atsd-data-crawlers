@@ -2,8 +2,6 @@ package com.axibase.crawler.orders;
 
 import com.axibase.crawler.common.Result;
 import com.axibase.crawler.data.OrderData;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -174,8 +172,7 @@ public class OrderInfoParser {
         return new Result<>(null, new OrderData(orderId, orderDate, products));
     }
 
-    @Nullable
-    private static Integer getId(@NotNull Element idElement) {
+    private static Integer getId(Element idElement) {
 
         String scriptText = idElement.html();
         String productIdSelector = "id:";
@@ -210,8 +207,7 @@ public class OrderInfoParser {
         return id;
     }
 
-    @Nullable
-    private static String getName(@NotNull Element nameElement) {
+    private static String getName(Element nameElement) {
         Element titleContainer = nameElement.child(0);
         if (titleContainer == null) return null;
 
@@ -221,8 +217,7 @@ public class OrderInfoParser {
         return title.text();
     }
 
-    @Nullable
-    private static Double getAmount(@NotNull Element amountElement) {
+    private static Double getAmount(Element amountElement) {
         Element amount = amountElement.child(0);
         if (amount == null) return null;
 
@@ -244,8 +239,7 @@ public class OrderInfoParser {
         }
     }
 
-    @Nullable
-    private static Double getPrice(@NotNull Element priceElement) {
+    private static Double getPrice(Element priceElement) {
         Element price = priceElement.child(0);
         if (price == null) return null;
 
@@ -266,8 +260,7 @@ public class OrderInfoParser {
         return result;
     }
 
-    @Nullable
-    private static String getUnits(@NotNull Element amountElement) {
+    private static String getUnits(Element amountElement) {
         Element units = amountElement.select("span").first();
         if (units == null) return null;
 

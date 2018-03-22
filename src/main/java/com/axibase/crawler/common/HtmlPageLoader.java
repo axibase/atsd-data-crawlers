@@ -1,7 +1,5 @@
 package com.axibase.crawler.common;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +9,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 public class HtmlPageLoader {
-
-    @NotNull
     public Result<String> LoadHtml(URL url) {
 
         Result<String> pageLoadingResult = null;
