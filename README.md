@@ -1,4 +1,4 @@
-# IRS Filing Season Statistics data crawler
+# IRS Expatriation Statistics data crawler
 
 ## Usage
 
