@@ -17,6 +17,13 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.axibase.crawler.Main</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -46,6 +53,5 @@
             <version>1.4.0</version>
         </dependency>
     </dependencies>
-
 
 </project>
