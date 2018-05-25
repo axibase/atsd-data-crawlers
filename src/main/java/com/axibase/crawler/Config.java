@@ -15,6 +15,7 @@ class Config {
     private String apiKey;
     private List<Integer> rootCategories;
     private Boolean traceCommands;
+    private List<String> seriesFilter;
 
     static Config fromFile() throws IOException {
         return fromFile(CONFIG_FILE);

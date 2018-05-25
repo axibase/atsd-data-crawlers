@@ -1,0 +1,35 @@
+<assembly>
+    <id>bin</id>
+    <!--  START SNIPPET: formats  -->
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <!--  END SNIPPET: formats  -->
+    <!--  START SNIPPET: fileSets  -->
+    <fileSets>
+        <fileSet>
+            <directory>src/main/script/</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/conf/</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+    <!--  END SNIPPET: fileSets  -->
+</assembly>

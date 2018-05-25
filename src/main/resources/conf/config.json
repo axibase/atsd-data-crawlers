@@ -1,0 +1,11 @@
+{
+  "minimalObservationEnd": "2014-01-01",
+  "apiKey": "abcdefghijklmnopqrstuvwxyz123456",
+  "traceCommands": false,
+  "rootCategories": [1, 2, 9, 10],
+  "seriesFilter": [
+    "BOPGTB",
+    "IMP0007",
+    "EXP0007"
+  ]
+}

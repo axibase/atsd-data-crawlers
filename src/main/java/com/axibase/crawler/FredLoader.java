@@ -10,16 +10,18 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 class FredLoader {
     private static final Logger logger = LoggerFactory.getLogger(FredLoader.class);
-    private static final SimpleDateFormat FRED_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     // For series pagination as given by FRED API
     private static final int MAX_SERIES_LIMIT = 1000;
     private static final int MAX_RETRIES = 5;
+    public static final String FRED_DATE_PATTERN = "yyyy-MM-dd";
 
     private Config config;
     private List<Integer> rootCategories;
@@ -35,8 +37,8 @@ class FredLoader {
     private List<String> newSeries = new ArrayList<>();
 
     FredLoader(Config config,
-                FredClient fredClient,
-               HttpClientManager httpClientManager) throws Exception {
+               FredClient fredClient,
+               HttpClientManager httpClientManager) throws IOException, ParseException {
         this.config = config;
         this.rootCategories = config.getRootCategories();
         this.fredClient = fredClient;
@@ -44,7 +46,11 @@ class FredLoader {
         this.atsdWriter = new AtsdWriter(httpClientManager);
         this.atsdWriter.setTracing(config.getTraceCommands());
         this.metaDataService = new MetaDataService(this.httpClientManager);
-        this.filterLimit = FRED_DATE_FORMAT.parse(config.getMinimalObservationEnd());
+        this.filterLimit = parseDate(config.getMinimalObservationEnd());
+    }
+
+    private Date parseDate(final String formattedDate) throws ParseException {
+        return new SimpleDateFormat(FRED_DATE_PATTERN).parse(formattedDate);
     }
 
     void runLoading() {
@@ -56,9 +62,16 @@ class FredLoader {
         }
 
         for (FredSeries series : allSeries) {
-            logger.info("Found series with id " + series.getId());
+            logger.info("Found series with id {}", series.getId());
         }
-
+        List<String> ids = Arrays.asList();
+        final List<String> seriesFilter = config.getSeriesFilter();
+        if (seriesFilter != null) {
+            logger.info("Applying log filter: {}", seriesFilter);
+            allSeries = allSeries.stream()
+                    .filter(fs -> ids.contains(fs.getId()))
+                    .collect(Collectors.toSet());
+        }
         for (FredSeries series : allSeries) {
             int retries = MAX_RETRIES;
             while (retries > 0) {
@@ -86,7 +99,7 @@ class FredLoader {
         while (!discoveryQueue.isEmpty()) {
             int category = discoveryQueue.remove(0);
 
-            logger.info("Fetching subcategories for category #" + category);
+            logger.info("Fetching subcategories for category #{}", category);
             int[] subcategories = fredClient.subCategories(category);
             for (int subcategory : subcategories) {
                 if (!foundCategories.contains(subcategory)) {
@@ -101,7 +114,7 @@ class FredLoader {
 
     private List<FredSeries> fetchSeriesForCategory(int categoryId) {
         List<FredSeries> series = new ArrayList<>();
-        logger.info("Fetching category #" + categoryId);
+        logger.info("Fetching category #{}", categoryId);
         int offset = 0;
         while (true) {
             FredSeries[] seriesOfCategory = fredClient.categorySeries(categoryId, offset);
@@ -118,7 +131,7 @@ class FredLoader {
         String seriesObservationEnd = series.getObservationEnd();
         Date seriesObservationEndDate;
         try {
-            seriesObservationEndDate = FRED_DATE_FORMAT.parse(seriesObservationEnd);
+            seriesObservationEndDate = parseDate(seriesObservationEnd);
         } catch (ParseException e) {
             logger.error("Error parsing end date", e);
             return;
@@ -134,18 +147,18 @@ class FredLoader {
             String storedObservationEnd = metricTags.get("observation_end");
             Date storedEndDate = null;
             try {
-                storedEndDate = FRED_DATE_FORMAT.parse(storedObservationEnd);
+                storedEndDate = parseDate(storedObservationEnd);
             } catch (ParseException e) {
                 logger.error("Error parsing observation_end", e);
             }
 
             if (storedEndDate == null || storedEndDate.before(seriesObservationEndDate)) {
                 logger.info("{},update,{},{}",
-                        series.getId(), FRED_DATE_FORMAT.format(storedEndDate), seriesObservationEnd);
+                        series.getId(), storedObservationEnd, seriesObservationEnd);
                 updatedSeries.add(series.getId());
             } else {
                 logger.info("{},skip,{},{}",
-                        series.getId(), FRED_DATE_FORMAT.format(storedEndDate), seriesObservationEnd);
+                        series.getId(), seriesObservationEnd, seriesObservationEnd);
                 return;
             }
         } else {

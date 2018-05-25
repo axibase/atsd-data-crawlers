@@ -81,6 +81,7 @@ Crawler reads configuration from two files
    | `minimalObservationEnd` | Date in `yyyy-MM-dd` format. Series that have `observation_end` before this date will be discarded. |
    | `traceCommands` | `true` of `false`. Network API commands will be recoreded into `commands.txt` when set to true. | 
    | `rootCategories` | List of category IDs. Series in these and all of the nested categories will be processed. |
+   | `seriesFilter` | List of series ids that need to retrieve |
    
    ```json
    {
@@ -119,3 +120,21 @@ Examples
 2018-05-17 07:10:36.574,LEU0254703700A,create,,2017-01-01
 2018-05-17 07:10:36.621,JTU5300TSR,update,2018-02-01,2018-03-01
 ```
+
+## Run application 
+Download binary archive from releases page
+
+```sh
+wget https://github.com/axibase/atsd-data-crawlers/releases/download/0.0.2-pre/fred-crawler-0.0.2-bin.tar.gz 
+```
+
+## Application properties
+
+You can configure the application with files `client.properties` and `config.json` according to the [configuration section](#configuration).
+
+## Extract and run
+```sh
+tar -xf fred-crawler-0.0.2-bin.tar.gz && cd fred-crawler-0.0.2
+./fred-crawler.sh
+```
+
