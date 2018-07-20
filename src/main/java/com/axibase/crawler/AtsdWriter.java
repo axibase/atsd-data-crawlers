@@ -122,7 +122,7 @@ class AtsdWriter {
 
             String isoStringDate = isoFormat.format(new Date(date));
 
-            String seriesCmd = String.format("series e:%s m:%s=%s d:%s\n",
+            String seriesCmd = String.format("series e:%s m:%s=%s d:%s%n",
                     ENTITY_NAME, fredSeries.getId(), strValue, isoStringDate);
 
             if (text)

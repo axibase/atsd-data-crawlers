@@ -5,16 +5,14 @@ import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 @Getter
 class Config {
     private static final String CONFIG_FILE = "config.json";
 
-    private String minimalObservationEnd;
     private String apiKey;
-    private List<Integer> rootCategories;
     private Boolean traceCommands;
+    private SeriesFilter filter;
 
     static Config fromFile() throws IOException {
         return fromFile(CONFIG_FILE);
