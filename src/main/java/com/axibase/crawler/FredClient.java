@@ -3,13 +3,13 @@ package com.axibase.crawler;
 import com.axibase.crawler.model.FredCategory;
 import com.axibase.crawler.model.FredObservation;
 import com.axibase.crawler.model.FredSeries;
+import com.axibase.crawler.model.FredSeriesSearchResult;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -18,9 +18,12 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.axibase.crawler.client.SeriesSearchMethod;
+
+@Slf4j
 class FredClient {
-    private static final Logger logger = LoggerFactory.getLogger(FredClient.class);
     private static final String BASE_URL = "https://api.stlouisfed.org/";
 
     private static final String CHILDREN_CATEGORIES = "fred/category/children";
@@ -30,6 +33,7 @@ class FredClient {
     private static final String SERIES_CATEGORIES = "fred/series/categories";
     private static final String CATEGORY = "fred/category";
     private static final String SERIES = "fred/series";
+    public static final String ERROR_PARSING_JSON = "Error parsing JSON";
 
     private ObjectMapper mapper = new ObjectMapper();
     private JsonFactory jsonFactory = mapper.getFactory();
@@ -48,7 +52,7 @@ class FredClient {
             JsonParser parser = jsonFactory.createParser(response);
             return mapper.readTree(parser);
         } catch (IOException e) {
-            logger.error("Error parsing JSON", e);
+            log.error(ERROR_PARSING_JSON, e);
             return null;
         }
     }
@@ -110,9 +114,16 @@ class FredClient {
 
             return mapper.treeToValue(json.path("seriess"), FredSeries[].class);
         } catch (JsonProcessingException e) {
-            logger.error("Error parsing JSON", e);
+            log.error("Error parsing JSON", e);
             return null;
         }
+    }
+
+    FredSeriesSearchResult searchSeries(final String searchString) {
+        return SeriesSearchMethod.builder(resource)
+                .searchString(searchString)
+                .build()
+                .execute();
     }
 
     FredSeries singleSeries(String seriesId) {
@@ -125,7 +136,7 @@ class FredClient {
         try {
             return mapper.treeToValue(json, FredSeries[].class)[0];
         } catch (JsonProcessingException e) {
-            logger.error("Error parsing JSON", e);
+            log.error("Error parsing JSON", e);
             return null;
         }
     }
@@ -146,7 +157,7 @@ class FredClient {
                 FredObservation obs = mapper.treeToValue(singleObservation, FredObservation.class);
                 result.add(obs);
             } catch (Exception e) {
-                logger.error("Error parsing JSON", e);
+                log.error("Error parsing JSON", e);
             }
         }
         FredObservation[] arrayResult = new FredObservation[result.size()];
@@ -164,7 +175,7 @@ class FredClient {
         try {
             return mapper.treeToValue(json, FredCategory[].class);
         } catch (JsonProcessingException e) {
-            logger.error("Error parsing JSON", e);
+            log.error("Error parsing JSON", e);
             return null;
         }
     }
@@ -179,7 +190,7 @@ class FredClient {
         try {
             return mapper.treeToValue(json, FredCategory[].class)[0];
         } catch (JsonProcessingException e) {
-            logger.error("Error parsing JSON", e);
+            log.error("Error parsing JSON", e);
             return null;
         }
     }
