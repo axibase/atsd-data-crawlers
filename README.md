@@ -1,10 +1,10 @@
 # IRS statistics data crawler
 
-Crawler that collect data from https://www.irs.gov/uac/2017-and-prior-year-filing-season-statistics and convert it to ATSD series commands
+Crawler that collects data from https://www.irs.gov/uac/2017-and-prior-year-filing-season-statistics and converts it to ATSD series commands
 
 ## Usage
 
-Get source code
+Download source code
 
 ```sh
 git clone https://github.com/axibase/atsd-data-crawlers
@@ -18,7 +18,7 @@ Build using Maven
 mvn clean install
 ```
 
-For crawling whole statistics use
+For crawling all statistics, run
 
 ```sh
 mvn exec:java
@@ -30,4 +30,4 @@ For crawling statistics from specitic date use "-d" flag (-d yyyy-MM-dd)
 mvn exec:java -Dexec.args="-d 2016-01-01"
 ```
 
-Result is "series.txt" file which contain series commands
+The result is "series.txt" file which contains series commands.
