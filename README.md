@@ -4,17 +4,20 @@
 
 Clone repository
 
-```
+```sh
 git clone -b irs-expatriation-data-crawler https://github.com/axibase/atsd-data-crawlers
+```
+
+```sh
 cd atsd-data-crawlers
 ```
 
-Add links on XML files to urls.properties file (in property `urls`)
+Modify links in the `urls.properties` file.
 
-Start crawler using maven
+Start crawler using maven.
 
 ```
 mvn compile exec:java
 ```
 
-Result series commands would be created in `result` folder
+Series commands are created in the `result` folder.
